@@ -8,9 +8,10 @@ export class BootcampsController {
   constructor(private readonly bootcampsService: BootcampsService) {}
 
   @Post()
-  create(@Body() createBootcampDto: CreateBootcampDto) {
-    return this.bootcampsService.create(createBootcampDto);
+  create(@Body() payload: any ){
+  return payload  
   }
+  
 
   @Get()
   findAll() {
@@ -23,8 +24,11 @@ export class BootcampsController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateBootcampDto: UpdateBootcampDto) {
-    return this.bootcampsService.update(+id, updateBootcampDto);
+  update(@Param('id') id: string, @Body() payload:any) {
+    return {
+      id, 
+      payload
+    }
   }
 
   @Delete(':id')
