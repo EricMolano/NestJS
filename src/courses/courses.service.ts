@@ -13,8 +13,11 @@ export class CoursesService {
     @InjectRepository(Course) private courseRepository: Repository <Course>,
   ) {}
 
-  create(createCourseDto: CreateCourseDto) {
-    return 'This action adds a new course';
+  create(payload : any) {
+    //Crear una instancia con el entity bootcamp y retornar
+    const newCourse = this.courseRepository.create(payload)
+    //Grabarlo
+    return this.courseRepository.save(newCourse) ;
   }
 
   findAll() {
@@ -30,6 +33,6 @@ export class CoursesService {
   }
 
   remove(id: number) {
-    return `This action removes a #${id} course`;
+    return this.courseRepository.delete({id});
   }
 }

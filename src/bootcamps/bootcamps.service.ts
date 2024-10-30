@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateBootcampDto } from './dto/create-bootcamp.dto';
 import { UpdateBootcampDto } from './dto/update-bootcamp.dto';
 import { Repository } from 'typeorm';
@@ -7,30 +7,41 @@ import { Bootcamp } from './entities/bootcamp.entity';
 
 @Injectable()
 export class BootcampsService {
-
-  // Inyectar: obtener una instancia del repositorio
-  // comp atributo de la clase bootcampsservice
-
   constructor(
-    @InjectRepository(Bootcamp) private bootcampRepository: Repository <Bootcamp>,
+    @InjectRepository(Bootcamp) private bootcampRepository: Repository<Bootcamp>,
   ) {}
-  create(createBootcampDto: CreateBootcampDto) {
-    return 'This action adds a new bootcamp';
+
+  async create(payload: CreateBootcampDto) {
+    const newBootcamp = this.bootcampRepository.create(payload);
+    return this.bootcampRepository.save(newBootcamp);
   }
 
-  findAll() {
-    return this.bootcampRepository.find();;
+  async findAll() {
+    return this.bootcampRepository.find();
   }
 
-  findOne(id: number) {
-    return this.bootcampRepository.findOneBy({id});
+  async findOne(id: number) {
+    const bootcamp = await this.bootcampRepository.findOneBy({ id });
+    if (!bootcamp) {
+      throw new NotFoundException(`Bootcamp with ID ${id} not found`);
+    }
+    return bootcamp;
   }
 
-  update(id: number, updateBootcampDto: UpdateBootcampDto) {
-    return `This action updates a #${id} bootcamp`;
+  async update(id: number, payload: UpdateBootcampDto) {
+    const updBootcamp = await this.bootcampRepository.findOneBy({ id });
+    if (!updBootcamp) {
+      throw new NotFoundException(`Bootcamp with ID ${id} not found`);
+    }
+    this.bootcampRepository.merge(updBootcamp, payload);
+    return this.bootcampRepository.save(updBootcamp);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} bootcamp`;
+  async remove(id: number) {
+    const result = await this.bootcampRepository.delete({ id });
+    if (result.affected === 0) {
+      throw new NotFoundException(`Bootcamp with ID ${id} not found`);
+    }
+    return { message: 'Bootcamp borrado exitosamente' };
   }
 }

@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm"
+import { Column, Double, Entity, PrimaryGeneratedColumn } from "typeorm"
 
 @Entity()
 export class Course {
@@ -13,6 +13,8 @@ export class Course {
 
     @Column('varchar', { length: 20 })
     weeks: number
+
+    @Column ({ type: 'decimal', nullable: true })
 
     @Column('varchar', { length: 20 })
     tuition: number

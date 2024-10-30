@@ -1,19 +1,32 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { User } from './entities/user.entity';
 
 @Injectable()
 export class UsersService {
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+
+  constructor(
+    @InjectRepository(User) private userRepository: Repository <User>,
+  ) {}
+
+
+  create(payload: any) {
+    //Crear una instancia con el entity bootcamp y retornar
+    const newUser = this.userRepository.create(payload)
+    //Grabarlo
+    return this.userRepository.save(newUser) ;
   }
 
+
   findAll() {
-    return `This action returns all users`;
+    return this.userRepository.find()
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} user`;
+    return this.userRepository.findOneBy({id});
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
@@ -21,6 +34,6 @@ export class UsersService {
   }
 
   remove(id: number) {
-    return `This action removes a #${id} user`;
+    return this.userRepository.delete({id});
   }
 }
