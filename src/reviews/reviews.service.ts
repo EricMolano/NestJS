@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
 import { Repository } from 'typeorm';
@@ -12,27 +12,40 @@ export class ReviewsService {
     @InjectRepository(Review) private reviewRepository: Repository <Review>,
   ) {}
 
-  create(payload: any) {
-    //Crear una instancia con el entity bootcamp y retornar
-    const newReview = this.reviewRepository.create(payload)
-    //Grabarlo
-    return this.reviewRepository.save(newReview) ;
+  async create(payload: CreateReviewDto) {
+    const newReview = this.reviewRepository.create(payload);
+    return this.reviewRepository.save(newReview);
   }
 
 
-  findAll() {
+
+  async findAll() {
     return this.reviewRepository.find()
   }
 
-  findOne(id: number) {
-    return this.reviewRepository.findOneBy({id});
+  async findOne(id: number) {
+    const review = await this.reviewRepository.findOneBy({ id });
+    if (!review) {
+      throw new NotFoundException(`Review with ID ${id} not found`);
+    }
+    return review;
   }
 
-  update(id: number, updateReviewDto: UpdateReviewDto) {
-    return `This action updates a #${id} review`;
+
+  async update(id: number, payload: UpdateReviewDto) {
+    const updReview = await this.reviewRepository.findOneBy({ id });
+    if (!updReview) {
+      throw new NotFoundException(`Review with ID ${id} not found`);
+    }
+    this.reviewRepository.merge(updReview, payload);
+    return this.reviewRepository.save(updReview);
   }
 
-  remove(id: number) {
-    return this.reviewRepository.delete({id});
+  async remove(id: number) {
+    const resultreview = await this.reviewRepository.delete({ id });
+    if (resultreview.affected === 0) {
+      throw new NotFoundException(`Review with ID ${id} not found`);
+    }
+    return { message: 'Review borrado exitosamente' };
   }
 }

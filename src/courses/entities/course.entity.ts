@@ -1,35 +1,35 @@
-import { Column, Double, Entity, PrimaryGeneratedColumn } from "typeorm"
+import { Column, Entity, PrimaryGeneratedColumn, ManyToOne } from "typeorm";
+import { Bootcamp } from "src/bootcamps/entities/bootcamp.entity";
+
+export enum minimumSkill {
+  Beginner = 'Beginner',
+  Intermediate = 'Intermediate',
+  Advance = 'Advance',
+}
 
 @Entity()
 export class Course {
-    @PrimaryGeneratedColumn()
-    id: number 
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @Column('varchar', {length: "100"} )
-    title: string
+  @Column('varchar', { length: 100 })
+  title: string;
 
-    @Column('varchar', {length: "100"} )
-    description: string
+  @Column('varchar', { length: 100 })
+  description: string;
 
-    @Column('varchar', { length: 20 })
-    weeks: number
+  @Column('varchar', { length: 20 })
+  weeks: number;
 
-    @Column ({ type: 'decimal', nullable: true })
+  @Column('decimal', { nullable: true })
+  tuition: number;
 
-    @Column('varchar', { length: 20 })
-    tuition: number
+  @Column('varchar', { length: 30 })
+  minimum: minimumSkill;
 
-    @Column('varchar', { length: 30 })
-    minimum: minimumSkill
+  @Column('date')
+  createdAt: Date;
 
-        @Column('date')
-    createdAt: Date
-
-
-}
-
-enum minimumSkill {
-    'Beginner',
-    'Intermediate',
-    'Advance'
+  @ManyToOne(() => Bootcamp, bootcamp => bootcamp.courses)
+  bootcamp: Bootcamp;
 }

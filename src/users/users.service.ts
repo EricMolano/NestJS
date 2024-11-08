@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Repository } from 'typeorm';
@@ -13,27 +13,37 @@ export class UsersService {
   ) {}
 
 
-  create(payload: any) {
-    //Crear una instancia con el entity bootcamp y retornar
-    const newUser = this.userRepository.create(payload)
-    //Grabarlo
-    return this.userRepository.save(newUser) ;
+  async create(payload: CreateUserDto) {
+    const newUser = this.userRepository.create(payload);
+    return this.userRepository.save(newUser);
   }
 
-
-  findAll() {
-    return this.userRepository.find()
+  async findAll() {
+    return this.userRepository.find();
   }
 
-  findOne(id: number) {
-    return this.userRepository.findOneBy({id});
+  async findOne(id: number) {
+    const user = await this.userRepository.findOneBy({ id });
+    if (!user) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+    return user;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(id: number, payload: UpdateUserDto) {
+    const updUser = await this.userRepository.findOneBy({ id });
+    if (!updUser) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+    this.userRepository.merge(updUser, payload);
+    return this.userRepository.save(updUser);
   }
 
-  remove(id: number) {
-    return this.userRepository.delete({id});
+  async remove(id: number) {
+    const resultUser = await this.userRepository.delete({ id });
+    if (resultUser.affected === 0) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+    return { message: 'Usuario borrado exitosamente' };
   }
 }

@@ -1,4 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm"
+import { Column, Entity, PrimaryGeneratedColumn, ManyToMany, OneToMany } from "typeorm";
+import { Bootcamp } from './../../bootcamps/entities/bootcamp.entity';
+import { Review } from './../../reviews/entities/review.entity';
 
 @Entity()
 export class User {
@@ -7,15 +9,20 @@ export class User {
     id: number;
 
     @Column('varchar', { length: 20 })
-    name: string
+    name: string;
 
     @Column('varchar', { length: 100 })
-    email: string
+    email: string;
 
     @Column('varchar', { length: 50 })
-    role: string
+    role: string;
 
     @Column('varchar', { length: 255 })
-    password: string
+    password: string;
 
+    @ManyToMany(() => Bootcamp, bootcamp => bootcamp.users)
+    bootcamps: Bootcamp[];
+
+    @OneToMany(() => Review, review => review.user)
+    reviews: Review[];
 }

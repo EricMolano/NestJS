@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
 import { Course } from './entities/course.entity';
@@ -13,26 +13,38 @@ export class CoursesService {
     @InjectRepository(Course) private courseRepository: Repository <Course>,
   ) {}
 
-  create(payload : any) {
-    //Crear una instancia con el entity bootcamp y retornar
+   async create(payload : CreateCourseDto) {
     const newCourse = this.courseRepository.create(payload)
-    //Grabarlo
     return this.courseRepository.save(newCourse) ;
   }
 
-  findAll() {
+  async findAll() {
     return this.courseRepository.find();;;
   }
 
-  findOne(id: number) {
-    return this.courseRepository.findOneBy({id});;
+  async findOne(id: number) {
+    const course = await this.courseRepository.findOneBy({ id });
+    if (!course) {
+      throw new NotFoundException(`Course with ID ${id} not found`);
+    }
+    return course;
   }
 
-  update(id: number, updateCourseDto: UpdateCourseDto) {
-    return `This action updates a #${id} course`;
+  async update(id: number, payload: UpdateCourseDto) {
+    const updCourse = await this.courseRepository.findOneBy({ id });
+    if (!updCourse) {
+      throw new NotFoundException(`Course with ID ${id} not found`);
+    }
+    this.courseRepository.merge(updCourse, payload);
+    return this.courseRepository.save(updCourse);
   }
 
-  remove(id: number) {
-    return this.courseRepository.delete({id});
+
+  async remove(id: number) {
+    const resultCourse = await this.courseRepository.delete({ id });
+    if (resultCourse.affected === 0) {
+      throw new NotFoundException(`Course with ID ${id} not found`);
+    }
+    return { message: 'Curso borrado exitosamente' };
   }
 }

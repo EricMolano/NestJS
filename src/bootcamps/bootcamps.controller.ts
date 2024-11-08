@@ -5,6 +5,7 @@ import { UpdateBootcampDto } from './dto/update-bootcamp.dto';
 
 @Controller('bootcamps')
 @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
+
 export class BootcampsController {
   constructor(private readonly bootcampsService: BootcampsService) {}
 
