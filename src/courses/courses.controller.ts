@@ -9,8 +9,8 @@ export class CoursesController {
   constructor(private readonly coursesService: CoursesService) {}
 
   @Post()
-  create(@Body() payload: CreateCourseDto ){
-  return this.coursesService.create(payload) ;  
+  create(@Body() payload: CreateCourseDto) {
+    return this.coursesService.create(payload);
   }
 
   @Get()

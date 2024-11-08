@@ -33,4 +33,9 @@ export class BootcampsController {
   remove(@Param('id') id: string) {
     return this.bootcampsService.remove(+id);
   }
+
+  @Get(':id/courses')
+  findBootcampWithCourses(@Param('id') id: string) {
+    return this.bootcampsService.findBootcampWithCourses(+id);
+  }
 }

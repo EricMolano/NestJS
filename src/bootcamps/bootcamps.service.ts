@@ -44,4 +44,12 @@ export class BootcampsService {
     }
     return { message: 'Bootcamp borrado exitosamente' };
   }
+
+  async findBootcampWithCourses(id: number) {
+    const bootcamp = await this.bootcampRepository.findOne({ where: { id }, relations: ['courses'] });
+    if (!bootcamp) {
+      throw new NotFoundException(`Bootcamp with ID ${id} not found`);
+    }
+    return bootcamp.courses;
+  }
 }

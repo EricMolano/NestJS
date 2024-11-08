@@ -21,4 +21,7 @@ export class CreateCourseDto {
 
   @IsDateString()
   createdAt: string;
+
+  @IsNotEmpty()
+  bootcampId: number;
 }
