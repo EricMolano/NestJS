@@ -1,3 +1,4 @@
+// src/users/users.controller.ts
 import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -5,7 +6,6 @@ import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('users')
 @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
-
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
@@ -32,5 +32,10 @@ export class UsersController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.usersService.remove(+id);
+  }
+
+  @Post(':userId/bootcamps/:bootcampId')
+  addUserToBootcamp(@Param('userId') userId: string, @Param('bootcampId') bootcampId: string) {
+    return this.usersService.addUserToBootcamp(+userId, +bootcampId);
   }
 }

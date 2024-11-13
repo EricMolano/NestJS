@@ -1,7 +1,6 @@
-import { IsString, IsEmail, Length } from 'class-validator';
+import { IsString, IsEmail, Length, IsInt, IsOptional } from 'class-validator';
 
 export class CreateUserDto {
-  
   @IsString()
   @Length(1, 20)
   name: string;
@@ -15,6 +14,10 @@ export class CreateUserDto {
   role: string;
 
   @IsString()
-  @Length(6, 255)  
+  @Length(6, 255)
   password: string;
+
+  @IsInt()
+  @IsOptional()
+  bootcampId?: number; 
 }

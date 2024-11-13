@@ -1,3 +1,4 @@
+// src/bootcamps/entities/bootcamp.entity.ts
 import { Column, Entity, PrimaryGeneratedColumn, ManyToMany, JoinTable, OneToMany } from "typeorm";
 import { User } from "src/users/entities/user.entity";
 import { Course } from "src/courses/entities/course.entity";
@@ -20,7 +21,7 @@ export class Bootcamp {
     @Column('text')
     topics: string;
 
-    @Column('double')
+    @Column('double', { default: 0 })
     averageRating: number;
 
     @Column('date')

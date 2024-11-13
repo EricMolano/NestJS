@@ -12,5 +12,16 @@ export class CreateReviewDto {
   comment: string;
 
   @IsNotEmpty()
+  @IsInt()
+  @Min(1)
+  @Max(10)
   rating: number;
+
+  @IsNotEmpty()
+  @IsInt()
+  bootcampId: number;
+
+  @IsNotEmpty()
+  @IsInt()
+  userId: number; // Asegúrate de que este campo esté presente
 }

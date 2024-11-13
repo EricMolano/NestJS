@@ -24,6 +24,4 @@ export class CreateBootcampDto {
   @IsNotEmpty()
   createdAt: Date;
   
-  
-  
 }

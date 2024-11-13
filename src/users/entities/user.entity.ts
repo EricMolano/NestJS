@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn, ManyToMany, OneToMany } from "typeorm";
+// src/users/entities/user.entity.ts
+import { Column, Entity, PrimaryGeneratedColumn, ManyToMany, JoinTable, OneToMany } from "typeorm";
 import { Bootcamp } from './../../bootcamps/entities/bootcamp.entity';
 import { Review } from './../../reviews/entities/review.entity';
 
@@ -21,6 +22,7 @@ export class User {
     password: string;
 
     @ManyToMany(() => Bootcamp, bootcamp => bootcamp.users)
+    @JoinTable()
     bootcamps: Bootcamp[];
 
     @OneToMany(() => Review, review => review.user)

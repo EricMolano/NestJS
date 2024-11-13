@@ -13,7 +13,7 @@ export class Review {
     @Column('varchar', { length: 100 })
     comment: string;
 
-    @Column('varchar', { length: 20 })
+    @Column('int')
     rating: number;
 
     @ManyToOne(() => User, user => user.reviews)

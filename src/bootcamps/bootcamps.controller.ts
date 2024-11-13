@@ -1,3 +1,4 @@
+// src/bootcamps/bootcamps.controller.ts
 import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe } from '@nestjs/common';
 import { BootcampsService } from './bootcamps.service';
 import { CreateBootcampDto } from './dto/create-bootcamp.dto';
@@ -5,7 +6,6 @@ import { UpdateBootcampDto } from './dto/update-bootcamp.dto';
 
 @Controller('bootcamps')
 @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
-
 export class BootcampsController {
   constructor(private readonly bootcampsService: BootcampsService) {}
 
@@ -13,7 +13,7 @@ export class BootcampsController {
   create(@Body() payload: CreateBootcampDto) {
     return this.bootcampsService.create(payload);
   }
-  
+
   @Get()
   findAll() {
     return this.bootcampsService.findAll();
@@ -34,8 +34,8 @@ export class BootcampsController {
     return this.bootcampsService.remove(+id);
   }
 
-  @Get(':id/courses')
-  findBootcampWithCourses(@Param('id') id: string) {
-    return this.bootcampsService.findBootcampWithCourses(+id);
+  @Get(':id/users')
+  findUsersByBootcamp(@Param('id') id: string) {
+    return this.bootcampsService.findUsersByBootcamp(+id);
   }
 }

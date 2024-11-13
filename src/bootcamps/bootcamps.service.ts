@@ -1,14 +1,17 @@
+// src/bootcamps/bootcamps.service.ts
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateBootcampDto } from './dto/create-bootcamp.dto';
 import { UpdateBootcampDto } from './dto/update-bootcamp.dto';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Bootcamp } from './entities/bootcamp.entity';
+import { User } from '../users/entities/user.entity';
 
 @Injectable()
 export class BootcampsService {
   constructor(
     @InjectRepository(Bootcamp) private bootcampRepository: Repository<Bootcamp>,
+    @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
 
   async create(payload: CreateBootcampDto) {
@@ -21,7 +24,7 @@ export class BootcampsService {
   }
 
   async findOne(id: number) {
-    const bootcamp = await this.bootcampRepository.findOneBy({ id });
+    const bootcamp = await this.bootcampRepository.findOne({ where: { id }, relations: ['users'] });
     if (!bootcamp) {
       throw new NotFoundException(`Bootcamp with ID ${id} not found`);
     }
@@ -45,11 +48,11 @@ export class BootcampsService {
     return { message: 'Bootcamp borrado exitosamente' };
   }
 
-  async findBootcampWithCourses(id: number) {
-    const bootcamp = await this.bootcampRepository.findOne({ where: { id }, relations: ['courses'] });
+  async findUsersByBootcamp(id: number) {
+    const bootcamp = await this.bootcampRepository.findOne({ where: { id }, relations: ['users'] });
     if (!bootcamp) {
       throw new NotFoundException(`Bootcamp with ID ${id} not found`);
     }
-    return bootcamp.courses;
+    return bootcamp.users;
   }
 }

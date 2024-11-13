@@ -12,5 +12,12 @@ export class UpdateReviewDto {
   comment?: string;
 
   @IsOptional()
+  @IsInt()
+  @Min(1)
+  @Max(10)
   rating?: number;
+
+  @IsOptional()
+  @IsInt()
+  bootcampId?: number;
 }
