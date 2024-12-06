@@ -1,4 +1,3 @@
-// src/bootcamps/bootcamps.controller.ts
 import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe } from '@nestjs/common';
 import { BootcampsService } from './bootcamps.service';
 import { CreateBootcampDto } from './dto/create-bootcamp.dto';
@@ -37,5 +36,10 @@ export class BootcampsController {
   @Get(':id/users')
   findUsersByBootcamp(@Param('id') id: string) {
     return this.bootcampsService.findUsersByBootcamp(+id);
+  }
+
+  @Get(':id/courses')
+  findCoursesByBootcamp(@Param('id') id: string) {
+    return this.bootcampsService.findCoursesByBootcamp(+id);
   }
 }

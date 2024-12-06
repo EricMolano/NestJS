@@ -1,17 +1,18 @@
-// src/bootcamps/bootcamps.service.ts
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateBootcampDto } from './dto/create-bootcamp.dto';
-import { UpdateBootcampDto } from './dto/update-bootcamp.dto';
-import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { Bootcamp } from './entities/bootcamp.entity';
 import { User } from '../users/entities/user.entity';
+import { Course, minimumSkill } from '../courses/entities/course.entity';
+import { CreateBootcampDto } from './dto/create-bootcamp.dto';
+import { UpdateBootcampDto } from './dto/update-bootcamp.dto';
 
 @Injectable()
 export class BootcampsService {
   constructor(
     @InjectRepository(Bootcamp) private bootcampRepository: Repository<Bootcamp>,
     @InjectRepository(User) private userRepository: Repository<User>,
+    @InjectRepository(Course) private courseRepository: Repository<Course>,
   ) {}
 
   async create(payload: CreateBootcampDto) {
@@ -24,7 +25,7 @@ export class BootcampsService {
   }
 
   async findOne(id: number) {
-    const bootcamp = await this.bootcampRepository.findOne({ where: { id }, relations: ['users'] });
+    const bootcamp = await this.bootcampRepository.findOne({ where: { id }, relations: ['users', 'courses'] });
     if (!bootcamp) {
       throw new NotFoundException(`Bootcamp with ID ${id} not found`);
     }
@@ -54,5 +55,19 @@ export class BootcampsService {
       throw new NotFoundException(`Bootcamp with ID ${id} not found`);
     }
     return bootcamp.users;
+  }
+
+  async findCoursesByBootcamp(id: number) {
+    const courses = await this.courseRepository.createQueryBuilder('course')
+      .innerJoin('course.bootcamp', 'bootcamp')
+      .where('bootcamp.id = :id', { id })
+      .andWhere('course.minimum = :minimumSkill', { minimumSkill: minimumSkill.Advance })
+      .getMany();
+
+    if (courses.length === 0) {
+      throw new NotFoundException(`No courses found for Bootcamp with ID ${id} and minimum skill Advance`);
+    }
+
+    return courses;
   }
 }
